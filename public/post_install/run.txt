@@ -1,0 +1,16 @@
+# SYNC NTP SYSTEM CLOCK
+sudo apt-get install ntpdate
+sudo nano /etc/systemd/timesyncd.conf
+sudo timedatectl set-ntp true 
+timedatectl status
+
+# INSTALL WEBMIN FOR MANAGING SERVER - 	2019-12-25
+sudo apt-get install perl libnet-ssleay-perl openssl libauthen-pam-perl libpam-runtime libio-pty-perl apt-show-versions python
+wget http://prdownloads.sourceforge.net/webadmin/webmin_1.940_all.deb
+sudo dpkg --install webmin_1.940_all.deb
+
+# PYMODBUS- http://riptideio.github.io/pymodbus/
+# Modbus Payload Server Example
+pip install -U pymodbus[twisted]
+pip install -U pymodbus[tornado]
+pip install -U pymodbus[repl]

@@ -1,0 +1,156 @@
+#!/bin/sh
+# description: Energy power meter
+#
+### BEGIN INIT INFO
+# Provides:		pipowermeter
+# description: 	Energy power meter device
+# chkconfig: 35 99 99
+# Default-Start:     2 3 4 5
+### END INIT INFO
+
+NAME=PiPowerMeter
+ROOTDIR=/root/app2/app
+DESC="Energy power measurement device"
+SERVER=$ROOTDIR/server.js
+LOGFILE=/var/log/pipowermeter.log
+
+USER="root"
+NODEJS=${NODEJS-/usr/local/bin/node}
+
+RETVAL=0
+
+echo "$LOGFILE"
+           if [ -e "$FILE" ]
+              then
+                echo "$FILE Log file exists..."
+           else
+                touch $LOGFILE
+           fi
+
+do_start()
+{
+        
+        #Check if running
+        pid=`ps -aefw | grep "$NODEJS $SERVER" | grep -v " grep " | awk '{print $2}'`
+    	if [ "$pid" != "" ]; then
+        	echo "ALREADY RUNNING - exiting...";
+            exit 0
+    	else
+         	date +"%Y-%m-%d %T Starting $NAME ($NODEJS $SERVER) as $USER" >> $LOGFILE
+        	echo -n "$NAME -> Starting > $NODEJS $SERVER: "
+        	cd $ROOTDIR
+        	#echo "$NODEJS $SERVER 1>$LOGFILE 2>&1 & echo \$! > $PID_FILE" | sudo -i -u $USER
+        	$NODEJS $SERVER 2>&1 &
+
+        	#Check if running
+        	pid=`ps -aefw | grep "$NODEJS $SERVER" | grep -v " grep " | awk '{print $2}'`
+        	if [ "$pid" != "" ]; then
+            	date +"%Y-%m-%d %T $NAME STARTED OK !" >> $LOGFILE
+        	else
+            	date +"%Y-%m-%d %T $NAME WAS NOT STARTED !" >> $LOGFILE
+        	fi   
+    	fi 
+           
+}
+
+do_restart()
+{
+#Check if running
+        pid=`ps -aefw | grep "$NODEJS $SERVER" | grep -v " grep " | awk '{print $2}'`
+    	if [ "$pid" != "" ]; then
+        	echo "ALREADY RUNNING - exiting...";
+            exit 0
+    	else
+         	date +"%Y-%m-%d %T [RESTART] ! restarting due not running -> Starting $NAME ($NODEJS $SERVER) as $USER" >> $LOGFILE
+        	echo -n "$NAME -> Starting > $NODEJS $SERVER: "
+        	cd $ROOTDIR
+        	#echo "$NODEJS $SERVER 1>$LOGFILE 2>&1 & echo \$! > $PID_FILE" | sudo -i -u $USER
+        	$NODEJS $SERVER 2>&1 &
+
+        	#Check if running
+        	pid=`ps -aefw | grep "$NODEJS $SERVER" | grep -v " grep " | awk '{print $2}'`
+        	if [ "$pid" != "" ]; then
+            	date +"%Y-%m-%d %T $NAME RESTARTED OK !" >> $LOGFILE
+        	else
+            	date +"%Y-%m-%d %T $NAME WAS NOT STARTED !" >> $LOGFILE
+        	fi   
+    	fi 
+}
+
+do_start_with_log()
+{
+
+		#Check if running
+        pid=`ps -aefw | grep "$NODEJS $SERVER" | grep -v " grep " | awk '{print $2}'`
+    	if [ "$pid" != "" ]; then
+        	echo "ALREADY RUNNING - exiting...";
+            exit 0
+    	else
+         	date +"%Y-%m-%d %T Starting with log all to $NAME ($NODEJS $SERVER) as $USER" >> $LOGFILE
+        	echo -n "$NAME -> Starting > $NODEJS $SERVER: "
+        	cd $ROOTDIR
+        	#echo "$NODEJS $SERVER 1>$LOGFILE 2>&1 & echo \$! > $PID_FILE" | sudo -i -u $USER
+        	$NODEJS $SERVER 1>>$LOGFILE 2>&1 &
+
+        	#Check if running
+        	pid=`ps -aefw | grep "$NODEJS $SERVER" | grep -v " grep " | awk '{print $2}'`
+        	if [ "$pid" != "" ]; then
+            	date +"%Y-%m-%d %T $NAME STARTED OK !" >> $LOGFILE
+        	else
+            	date +"%Y-%m-%d %T $NAME WAS NOT STARTED !" >> $LOGFILE
+        	fi   
+    	fi    
+}
+
+do_stop()
+{
+    date +"%Y-%m-%d %T Stopping $SERVER" >> $LOGFILE
+    echo -n "Stopping $SERVER: "
+    echo -n "Finding if script is running!"
+    pid=`ps -aefw | grep "$NODEJS $SERVER" | grep -v " grep " | awk '{print $2}'`
+    if [ "$pid" != "" ]; then
+    	echo "$NODEJS $SERVER (pid $pid) is running... Trying to stop it"
+    	kill -9 $pid >/dev/null 2>&1 && echo "$NAME STOP SUCCESS">>$LOGFILE || echo "$NAME STOP FAILED">>$LOGFILE
+    else
+         echo "$NODEJS $SERVER is already stopped"
+   	fi
+
+}
+
+do_status()
+{
+   pid=`ps -aefw | grep "$NODEJS $SERVER" | grep -v " grep " | awk '{print $2}'`
+   echo "Searching for: $pid"
+   if [ "$pid" != "" ]; then
+     echo "$NODEJS $SERVER (pid $pid) is running..."
+   else
+     echo "$NODEJS $SERVER is stopped"
+   fi
+}
+
+
+case "$1" in
+    restart)
+        do_stop
+        so_start
+        ;;
+    start)
+        do_start
+        ;;
+    start_with_log)
+    	do_start_with_log
+        ;;
+    stop)
+        do_stop
+        ;;
+    status)
+        do_status
+        ;;
+    restart_on_dead)
+        do_restart
+        ;;
+    *)
+        echo "Usage: $0 {start|start_with_log|stop|status|restart|restart_on_dead}"
+        RETVAL=1
+esac
+exit $RETVAL 
