@@ -10,6 +10,7 @@ var netUtils = require('./utils.js');
 var fs = require("fs");
 var common = require("./common");
 var mqtt = null, mqttClient = null;
+var mqtt_system_name, system_name = "PowerMeter";// Define global system name for better MQTT tree definition
 
 // load currently installed software version and check for updates every hour
 var exec = require('child_process').exec, softwareVersion = null;
@@ -378,17 +379,18 @@ reader.on('message', function (msg) {
                 console.log(circuit.Name + ' : V= ' + circuit.Samples[0].vRms.round(1) + '  I= ' + circuit.Samples[0].iRms.round(1) + '  P= ' + pTotal.round(1) + '  Q= ' + qTotal.round(1) + '  PF= ' + circuit.Samples[0].pf.round(4) + '  F= ' + circuit.Samples[0].CalculatedFrequency.round(3) + '  F2= ' + circuit.Samples[0].freq.round(3) + ' (' + circuit.Samples[0].tsInst.length + ' samples in ' + circuit.Samples[0].tsInst[circuit.Samples[0].tsInst.length - 1] + 'ms)');
 
                 if (mqttClient != null) {
+                    mqtt_system_name = system_name + '/' + device_name; // Define global system name for better MQTT tree definition
                     try {
-                        mqttClient.publish(deviceName + '/' + circuit.id + '/Name', circuit.Name);
-                        mqttClient.publish(deviceName + '/' + circuit.id + '/Voltage', circuit.Samples[0].vRms.round(1));
-                        mqttClient.publish(deviceName + '/' + circuit.id + '/Current', circuit.Samples[0].iRms.round(2));
-                        mqttClient.publish(deviceName + '/' + circuit.id + '/Watts', pTotal.round(1));
-                        mqttClient.publish(deviceName + '/' + circuit.id + '/Vars', qTotal.round(1));
-                        mqttClient.publish(deviceName + '/' + circuit.id + '/PowerFactor', circuit.Samples[0].pf.round(4));
-                        mqttClient.publish(deviceName + '/' + circuit.id + '/Timestamp', circuit.Samples[0].ts);
-                        mqttClient.publish(deviceName + '/' + circuit.id + '/Frequency', circuit.Samples[0].CalculatedFrequency.round(3));
+                        mqttClient.publish(mqtt_system_name + '/' + circuit.id + '/Name', circuit.Name);
+                        mqttClient.publish(mqtt_system_name + '/' + circuit.id + '/Voltage', circuit.Samples[0].vRms.round(1));
+                        mqttClient.publish(mqtt_system_name + '/' + circuit.id + '/Current', circuit.Samples[0].iRms.round(2));
+                        mqttClient.publish(mqtt_system_name + '/' + circuit.id + '/Watts', pTotal.round(1));
+                        mqttClient.publish(mqtt_system_name + '/' + circuit.id + '/Vars', qTotal.round(1));
+                        mqttClient.publish(mqtt_system_name + '/' + circuit.id + '/PowerFactor', circuit.Samples[0].pf.round(4));
+                        mqttClient.publish(mqtt_system_name + '/' + circuit.id + '/Timestamp', circuit.Samples[0].ts);
+                        mqttClient.publish(mqtt_system_name + '/' + circuit.id + '/Frequency', circuit.Samples[0].CalculatedFrequency.round(3));
                         if (circuit.LastDayKwh != null)
-                            mqttClient.publish(deviceName + '/' + circuit.id + '/LastDayKwh', circuit.LastDayKwh.round(1));
+                            mqttClient.publish(mqtt_system_name + '/' + circuit.id + '/LastDayKwh', circuit.LastDayKwh.round(1));
                     }
                     catch (err) {
                         console.error("Error writing to MQTT server: " + data.MqttServer + ".  Error: " + err);
