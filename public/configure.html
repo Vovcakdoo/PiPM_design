@@ -5,16 +5,16 @@
     <meta charset="utf-8" />
     <title>Power Meter</title>
     <link rel="stylesheet" href="powermeter.css">
-    <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/themes/smoothness/jquery-ui.css" />
+    <link rel="stylesheet" href="css/jquery-ui.css" />
 	
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+	<link rel="stylesheet" href="css/bootstrap.min.css">
 
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0/handlebars.min.js"></script>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/jquery-ui.min.js"></script>
+    <script src="js/handlebars.min.js"></script>
 
-    <script src="//ajax.aspnetcdn.com/ajax/globalize/0.1.1/globalize.min.js"></script>
-    <script src="//ajax.aspnetcdn.com/ajax/globalize/0.1.1/cultures/globalize.cultures.js"></script>
+    <script src="js/globalize.min.js"></script>
+    <script src="js/globalize.cultures.js"></script>
     
     
 
@@ -406,8 +406,6 @@
 
 <body>
     <!-- Google Tag Manager -->
-    <noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-57V732" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-	<script type="text/javascript" src="google.js"></script>
 	<!-- End Google Tag Manager -->
 
     <div class='header'></div>
@@ -567,7 +565,8 @@
             <td>
                 <table id='probetable' class='table table-striped table-dark'>
                     <tr>
-						<td></td>
+						<td>id</td>
+						<td>Sensor</td>
 						<td>Board num</td>
 						<td>CH num</td>
 						<td>Voltage</td>
@@ -605,13 +604,7 @@
                 <select id="board" >
                     {{#select Board}}
                         <option value='0'>0</option>
-                        <option value='1'>1</option>
-                        <option value='2'>2</option>
-                        <option value='3'>3</option>
-                        <option value='4'>4</option>
-                        <option value='5'>5</option>
-                        <option value='6'>6</option>
-                        <option value='7'>7</option>
+
                     {{/select}}
                 </select>
             </td>
@@ -624,16 +617,7 @@
                         <option value='3'>3</option>
                         <option value='4'>4</option>
                         <option value='5'>5</option>
-                        <option value='6'>6</option>
-                        <option value='7'>7</option>
-                        <option value='8'>8</option>
-                        <option value='9'>9</option>
-                        <option value='10'>10</option>
-                        <option value='11'>11</option>
-                        <option value='12'>12</option>
-                        <option value='13'>13</option>
-                        <option value='14'>14</option>
-                        <option value='15'>15</option>
+
                     {{/select}}
                 </select>
             </td>
