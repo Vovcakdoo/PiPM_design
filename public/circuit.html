@@ -30,8 +30,10 @@
             var GetTimespanDate = function (timespan) {
 
                 var start, end = new Date();
-                if (timespan == 'Hour')
-                    start = new Date(end.getTime() - 1000 * 60 * 60);
+                if (timespan == '15min')
+                    start = new Date(end.getTime() - 1000 * 60 * 15);
+                else if (timespan == 'Hour')
+                	start = new Date(end.getTime() - 1000 * 60 * 60);
                 else if (timespan == 'Day')
                     start = new Date(end.getTime() - 1000 * 60 * 60 * 24);
                 else if (timespan == 'Week')
@@ -193,7 +195,7 @@
 		
 		$('#groupby').empty();
 
-		if (timespan == 'Instant' || timespan == 'Hour') 
+		if (timespan == 'Instant' || timespan == 'Hour' || timespan == '15min') 
 			$('#groupby').hide();
 		else if (timespan == 'Day') 
 			$('#groupby')
@@ -238,9 +240,10 @@
         <div class="footer">
             <div id="table" class='demo-table table table-striped'></div>
             <div id='buttons'>
-                <button id='refresh1'>Refresh</button>
+                <button id='refresh1' class="btn btn-primary">Refresh</button>
                 <select id="Timespan" onchange='timespanChanged()'>
                     <option value='Instant'>Instant</option>
+                    <option value='15min'>15 min</option>
                     <option value='Hour'>Hour</option>
                     <option value='Day'>Day</option>
                     <option value='Week'>Week</option>
